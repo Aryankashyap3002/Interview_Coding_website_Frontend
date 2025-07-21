@@ -1,6 +1,8 @@
 import SocketIoClient from 'socket.io-client';
-import { createContext, useEffect } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Peer from 'peerjs';
+import { v4 as UUIDv4 } from 'uuid';
 
 const ws_server = import.meta.env.VITE_WS_Server;
 console.log(ws_server);
@@ -17,18 +19,33 @@ export const SocketProvider: React.FC<Props> = ({children}) => {
 
     const navigate = useNavigate();
 
+    const [user, setUser] = useState<Peer>();
+
+    const fetchParticpants = ({roomId, participants}: {roomId: string, participants: string[]}) => {
+        console.log("Fetch Participants");
+        console.log(roomId, participants);
+    }
+
     useEffect(() => {
+
+        const userId = UUIDv4();
+        const newUser = new Peer(userId);
+        
+        setUser(newUser);
+
         const enterRoom = ({ roomId} : {roomId: string}) => {
             navigate(`/room/${roomId}`);
         }
 
         socket.on("room-created", enterRoom);
+
+        socket.emit("get-user", fetchParticpants);
     }, []);
 
    
 
     return (
-        <SocketContext.Provider  value={{ socket }}>
+        <SocketContext.Provider  value={{ socket, user }}>
             {children}
         </SocketContext.Provider>
     )
