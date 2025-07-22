@@ -51,7 +51,7 @@ export const SocketProvider: React.FC<Props> = ({children}) => {
 
         socket.on("room-created", enterRoom);
 
-        socket.emit("get-user", fetchParticpants);
+        socket.on("get-user", fetchParticpants);
     }, []);
 
    
