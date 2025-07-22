@@ -6,7 +6,7 @@ import UserFeedPlayer from "../Components/UserFeedPlayer";
 const Room: React.FC = () => {
 
     const { id } = useParams();
-    const { socket, user, stream }= useContext(SocketContext);
+    const { socket, user, stream, peers }= useContext(SocketContext);
 
     const navigate = useNavigate();
 
@@ -26,6 +26,15 @@ const Room: React.FC = () => {
         <div>
             Room is connected with id {id} and  user Id is {user && user._id}
             <UserFeedPlayer stream={stream}/>
+
+            <div>
+                {Object.keys(peers).map((peerId) => (
+                    <>
+                        <UserFeedPlayer key={peerId} stream={peers[peerId].stream}/>
+                    </>
+                ))}
+            </div>
+
             <button 
                 type="button" 
                 className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
